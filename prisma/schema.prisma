@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  role          String
+  pointsBalance Int       @default(0)
+  createdAt     DateTime  @default(now())
+  
+  business      Business?
+  claims        Claim[]
+  impactLogs    ImpactLog[]
+}
+
+model Business {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  businessName    String
+  licenseNumber   String?
+  verified        Boolean  @default(false)
+  address         String
+  latitude        Float
+  longitude       Float
+  createdAt       DateTime @default(now())
+  
+  user            User     @relation(fields: [userId], references: [id])
+  listings        FoodListing[]
+}
+
+model FoodListing {
+  id            String     @id @default(cuid())
+  businessId    String
+  title         String
+  description   String?
+  quantityKg    Float
+  expiryDate    DateTime
+  status        String     @default("AVAILABLE")
+  price         Float?
+  imageUrl      String?
+  createdAt     DateTime   @default(now())
+  
+  business      Business   @relation(fields: [businessId], references: [id])
+  claims        Claim[]
+}
+
+model Claim {
+  id            String     @id @default(cuid())
+  userId        String
+  listingId     String
+  status        String     @default("PENDING")
+  createdAt     DateTime   @default(now())
+  
+  user          User       @relation(fields: [userId], references: [id])
+  listing       FoodListing @relation(fields: [listingId], references: [id])
+}
+
+model ImpactLog {
+  id            String   @id @default(cuid())
+  userId        String
+  kgSaved       Float
+  co2Reduced    Float
+  waterSaved    Float
+  createdAt     DateTime @default(now())
+  
+  user          User     @relation(fields: [userId], references: [id])
+}
