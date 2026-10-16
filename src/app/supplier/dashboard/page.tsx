@@ -64,8 +64,8 @@ export default function SupplierDashboard() {
           </CardHeader>
           
           <CardContent className="pb-8">
-            <form action={createListing} className="space-y-6">
-              <div className="space-y-2">
+<form action={createListing as any} className="space-y-6">
+                  <div className="space-y-2">
                 <Label htmlFor="title" className="text-base font-medium text-gray-700">Food Name</Label>
                 <Input 
                   id="title" 
